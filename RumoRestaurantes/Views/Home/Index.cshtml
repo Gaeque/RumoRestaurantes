@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Rumo Restaurante";
+}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!--
+    Tela Inicial do nosso restaurante
+-->
+<!--
+    FUNÇÃO DO NOSSO MODAL PARA FUNCIONÁRIOS
+-->
+<script>
+
+    $(document).ready(function () {
+        $('#btnOpenModal').click(function () {
+            $('#myModal').modal('show');
+        });
+        $('#btnSubmit').click(function () {
+            var nome = $('#nome').val();
+            var senha = $('#senha').val();
+            $('#myModal').modal('hide'); // Corrigido para selecionar o modal corretamente
+        });
+        $('#closeModal').click(function () {
+            $('#myModal').modal('hide'); // Corrigido para selecionar o modal corretamente
+        });
+    });
+
+</script>
+
+<style>
+    .botoes {
+        margin-top: 8rem;
+    }
+</style>
+
+<!--
+    TELA INICIAL 
+-->
+
+<div class="text-center principal">
+    <h1 class="display-6">Bem vindo ao nosso Restaurante</h1>
+    <h2>Primeiro nos informe</h2>
+    <div class="botoes">
+        <a asp-area="" asp-controller="Cliente" asp-action="Index" class="btn btn-primary btn-lg mr-2">Sou Cliente</a>
+
+        <button type="button" class="btn btn-primary btn-lg mr-2" id="btnOpenModal">Sou Funcionário</button>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Bem vindo Funcionário</h5>
+                        <button type="button" id="closeModal" class="close btn-danger" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">X</span>
+                        </button>
+                    </div>
+                    <form asp-controller="Funcionario" asp-action="Login" method="post">
+                        <div class="modal-body">
+                            <input type="text" name="nome" id="nome" class="form-control mb-3" placeholder="Nome">
+                            <input type="password" name="senha" id="senha" class="form-control" placeholder="Senha">
+                        </div>
+                        <button type="submit" class="btn btn-primary mr-2">Entrar</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>

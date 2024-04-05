@@ -1,0 +1,164 @@
+﻿@{
+    ViewData["Title"] = "Rumo Funcionário";
+}
+
+<!--
+    Faz uma consulta no banco de dados e retorna preenchendo a tabela "COZINHA"
+    Também adiciona um botão que chama um httpdelete para finalizar e apagar os pedidos.
+-->
+<script>
+    function atualizaCozinha() {
+    fetch('https://localhost:44354/Funcionario/pedidos', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'Application/json'
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Erro ao obter dados do estoque");
+            }
+            return response.json();
+        })
+        .then(data => {
+
+            const tbody = document.querySelector('.tabela-cozinha tbody');
+            tbody.innerHTML = '';
+            const formatDateTime = (dateTimeString) => {
+                const dateTime = new Date(dateTimeString);
+                const day = dateTime.getDate().toString().padStart(2, '0');
+                const month = (dateTime.getMonth() + 1).toString().padStart(2, '0');
+                const hours = dateTime.getHours().toString().padStart(2, '0');
+                const minutes = dateTime.getMinutes().toString().padStart(2, '0');
+                return `${day}/${month} ${hours}:${minutes}`;
+            };
+            data.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${item.mesa}</td>
+                    <td>${item.prato}</td>
+                    <td>${item.quantidade}</td>
+                    <td>${formatDateTime(item.dataHoraPedido)}</td>
+                    <td><button class="btn-excluir" data-id="${item.pedidoClienteId}">Finalizar Pedido</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Adicionar evento de clique para botões de exclusão
+            document.querySelectorAll('.btn-excluir').forEach(button => {
+                button.addEventListener('click', () => {
+                    const id = button.getAttribute('data-id');
+                    if (id) {
+                        fetch(`https://localhost:44354/Funcionario/Pedidos/${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'Application/json'
+                            }
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error("Erro ao excluir pedido");
+                                }
+                                location.reload();
+                            })
+                            .catch(error => {
+                                console.error('Erro ao excluir pedido:', error);
+                            });
+                    } else {
+                        console.error('ID indefinido');
+                    }
+                });
+            });
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+        });
+    };
+
+    setInterval(atualizaCozinha, 5000);
+    atualizaCozinha();
+
+</script>
+
+<!--
+    Faz uma consulta no banco de dados e retorna preenchendo a tabela "COPA"
+-->
+<script>
+    function atualizaCopa() {
+    fetch('https://localhost:44354/Funcionario/pedidos', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'Application/json'
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Erro ao obter dados do estoque");
+            }
+            return response.json();
+        })
+        .then(data => {
+
+            const tbody = document.querySelector('.tabela-copa tbody');
+            tbody.innerHTML = '';
+            const formatDateTime = (dateTimeString) => {
+                const dateTime = new Date(dateTimeString);
+                const day = dateTime.getDate().toString().padStart(2, '0');
+                const month = (dateTime.getMonth() + 1).toString().padStart(2, '0');
+                const hours = dateTime.getHours().toString().padStart(2, '0');
+                const minutes = dateTime.getMinutes().toString().padStart(2, '0');
+                return `${day}/${month} ${hours}:${minutes}`;
+            };
+            data.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                        <td>${item.mesa}</td>
+                        <td>${item.bebida}</td>
+                        <td>${formatDateTime(item.dataHoraPedido)}</td>
+                    `;
+                tbody.appendChild(tr);
+            });
+        })
+        .catch(error => {
+            console.error('erro:', error);
+        });
+    };
+    setInterval(atualizaCopa, 5000);
+    atualizaCopa();
+</script>
+
+
+<!-- Tabela de pedidos -->
+
+<div class="row">
+    <div class="col-md-6">
+        <h2>Cozinha</h2>
+        <table class="table tabela-cozinha">
+            <thead>
+                <tr>
+                    <th>Mesa</th>
+                    <th>Prato</th>
+                    <th>Quantidade</th>
+                    <th>Hora</th>
+
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <h2>Copa</h2>
+        <table class="table tabela-copa">
+            <thead>
+                <tr>
+                    <th>Mesa</th>
+                    <th>Bebida</th>
+                    <th>Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
